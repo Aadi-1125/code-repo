@@ -1,0 +1,25 @@
+Pull Workflows
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version of workflows to pull'
+        required: true
+
+jobs:
+  pull-workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code-repo
+        uses: actions/checkout@v2
+      - name: Pull workflows from template-repo
+        uses: actions/checkout@v2
+        with:
+          repository: Ravicharan-nettyam/code-repo
+          token: ${{ secrets.PAT_TOKEN }}
+          path: template-repo
+      - name: Copy workflows to code-repo
+        run: |
+          cp template-repo/build-workflow.yaml ./build-workflow.yaml
+          cp template-repo/deploy-dev-weblogic.yaml ./deploy-dev-weblogic.yaml

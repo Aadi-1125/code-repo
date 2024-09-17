@@ -6,10 +6,6 @@ on:
       version:
         description: 'Version of workflows to pull'
         required: true
-      components:
-        description: 'Components to pull (build, deploy-dev-weblogic, or both)'
-        required: true
-        default: 'both'  # Options: 'build', 'deploy-dev-weblogic', 'both'
 
 jobs:
   pull-workflows:
@@ -17,21 +13,14 @@ jobs:
     steps:
       - name: Checkout code-repo
         uses: actions/checkout@v2
-
       - name: Pull workflows from template-repo
         uses: actions/checkout@v2
         with:
           repository: Ravicharan-nettyam/code-repo
           token: ${{ secrets.PAT_TOKEN }}
           path: template-repo
-      
-      - name: Conditionally pull build-workflow.yaml
-        if: contains(github.event.inputs.components, 'build') || github.event.inputs.components == 'both'
+      - name: Copy workflows to code-repo
         run: |
           cp template-repo/build-workflow.yaml ./build-workflow.yaml
-      
-      - name: Conditionally pull deploy-dev-weblogic.yaml
-        if: contains(github.event.inputs.components, 'deploy-dev-weblogic') || github.event.inputs.components == 'both'
-        run: |
           cp template-repo/deploy-dev-weblogic.yaml ./deploy-dev-weblogic.yaml
 

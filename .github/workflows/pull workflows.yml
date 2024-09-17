@@ -21,20 +21,19 @@ jobs:
   pull-workflows:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code-repo
+        uses: actions/checkout@v3
+
       - name: Pull and Commit Workflows
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Checkout code-repo
-          git clone https://github.com/${{ github.repository }} repo
-          cd repo
-          
           # Fetch workflows from template-repo based on inputs
           if [[ "${{ github.event.inputs.components }}" == "build" || "${{ github.event.inputs.components }}" == "both" ]]; then
-            curl -o .github/workflows/build-workflow.yaml https://raw.githubusercontent.com/Ravicharan-nettyam/code-repo/${{ github.event.inputs.version }}/.github/workflows/build-workflow.yaml
+            curl -o .github/workflows/build-workflow.yaml https://raw.githubusercontent.com/Ravicharan-nettyam/template-repo/${{ github.event.inputs.version }}/.github/workflows/build-workflow.yaml
           fi
           if [[ "${{ github.event.inputs.components }}" == "deploy-dev-weblogic" || "${{ github.event.inputs.components }}" == "both" ]]; then
-            curl -o .github/workflows/deploy-dev-weblogic.yaml https://raw.githubusercontent.com/Ravicharan-nettyam/code-repo/${{ github.event.inputs.version }}/.github/workflows/deploy-dev-weblogic.yaml
+            curl -o .github/workflows/deploy-dev-weblogic.yaml https://raw.githubusercontent.com/Ravicharan-nettyam/template-repo/${{ github.event.inputs.version }}/.github/workflows/deploy-dev-weblogic.yaml
           fi
 
           # Check contents
@@ -47,4 +46,3 @@ jobs:
           git add .github/workflows
           git commit -m "Pulled workflows from template-repo (version: ${{ github.event.inputs.version }})"
           git push origin main
-
